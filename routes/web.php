@@ -20,3 +20,10 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/test', [App\Http\Controllers\HomeController::class, 'test'])->name('test');
+
+Route::middleware('auth')->group(function(){
+    Route::resource('/category',App\Http\Controllers\CategoryController::class);
+    Route::resource('/post',App\Http\Controllers\PostController::class);
+    Route::resource('/user',App\Http\Controllers\UserController::class);
+});
