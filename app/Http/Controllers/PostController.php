@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\Photo;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use Illuminate\Support\Str;
@@ -22,7 +23,9 @@ class PostController extends Controller
         $posts = Post::when(request('keyword'),function($q){
             $keyword = request('keyword');
             $q->orWhere('title','like',"%$keyword%")->orWhere('description','like',"%$keyword%");
-        })->latest('id')->paginate(10)->withQueryString();
+        })->when(Auth::user()->isAuthor(),function($q){
+            $q->where('user_id',Auth::id());
+        })->latest('id')->with(['category','user'])->paginate(30)->withQueryString();
         return view('post.index',compact('posts'));
     }
 
@@ -57,6 +60,17 @@ class PostController extends Controller
             $post->featured_image = $newName;
         }
         $post->save();
+
+        // saving photos -> 1-save to storage -> 2-save to db
+        foreach($request->photos as $photo){
+            $newName = uniqid().'-post-photo.'.$photo->extension();
+            $photo->storeAs('public',$newName);
+
+            $photo = new Photo();
+            $photo->post_id = $post->id;
+            $photo->name = $newName;
+            $photo->save();
+        }
         return redirect()->route('post.index')->with('status',"$request->title is Added");
     }
 
@@ -68,6 +82,9 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
+        // return $post->user;
+        // return $post->category->title;
+        Gate::authorize('view',$post);
         return view('post.show',compact('post'));
     }
 
@@ -79,6 +96,7 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
+        Gate::authorize('update',$post);
         return view('post.edit',compact('post'));
     }
 
@@ -107,6 +125,18 @@ class PostController extends Controller
             $post->featured_image = $newName;      
         }
         $post->update();
+
+        // saving photos -> 1-save to storage -> 2-save to db
+        foreach($request->photos as $photo){
+            $newName = uniqid().'-post-photo.'.$photo->extension();
+            $photo->storeAs('public',$newName);
+
+            $photo = new Photo();
+            $photo->post_id = $post->id;
+            $photo->name = $newName;
+            $photo->save();
+        }
+
         return redirect()->route('post.index')->with('status',"$request->title is Updated");
     }
 
@@ -126,6 +156,11 @@ class PostController extends Controller
         if(isset($post->featured_image)){
             Storage::delete('public/'.$post->featured_image);
         }  
+
+        foreach($post->photos as $photo){
+            Storage::delete('public/'.$photo->name);
+            $photo->delete();
+        }
 
         $post->delete();
         return redirect()->route('post.index')->with('status',"$postTitle is Deleted");

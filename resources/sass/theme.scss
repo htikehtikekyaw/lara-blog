@@ -1,0 +1,19 @@
+
+
+@import "~bootstrap-icons/font/bootstrap-icons.css";
+@import "~venobox/dist/venobox.css";
+@import "var";
+
+
+$carousel-control-color: $primary;
+
+
+@import "~bootstrap/scss/bootstrap";
+@import "bw";
+
+.post-detail-img{
+    width: 300px !important;
+    height: 300px !important;
+    object-fit: contain !important;
+}
+

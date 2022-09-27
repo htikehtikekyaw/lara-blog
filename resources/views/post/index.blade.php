@@ -3,8 +3,8 @@
 @section('content')
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item" aria-current="page">Home</li>
-            <li class="breadcrumb-item active" aria-current="page">Manage Post</li>
+            <a class="breadcrumb-item" href="{{ route('home') }}" aria-current="page"> Home</a>
+            <a class="breadcrumb-item active" href="{{ route('post.index') }}" aria-current="page">Post List</a>
         </ol>
     </nav>
     <div class="card">
@@ -32,7 +32,9 @@
                         <th>#</th>
                         <th>Title</th>
                         <th>Category</th>
-                        <th>Owner</th>
+                        @notAuthor
+                            <th>Owner</th>
+                        @endnotAuthor
                         <th>Control</th>
                         <th>Created At</th>
                     </tr>
@@ -45,11 +47,13 @@
                                 {{ $post->title }}
                             </td>
                             <td class="text-nowrap">
-                                {{ \App\Models\Category::find($post->category_id)->title }}
+                                {{ $post->category->title }}
                             </td>
-                            <td class="text-nowrap">
-                                {{ \App\Models\User::find($post->user_id)->name }}
-                            </td>
+                            @notAuthor
+                                <td class="text-nowrap">
+                                    {{ $post->user->name }}
+                                </td>
+                            @endnotAuthor
                             <td class="text-nowrap">
                                 <a href="{{ route('post.show',$post->id) }}" class="btn btn-success btn-sm"><i class="bi bi-info-circle"></i></a>
                                 @can('update',$post)

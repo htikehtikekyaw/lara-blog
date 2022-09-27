@@ -16,7 +16,12 @@
                     <tr>
                         <th>#</th>
                         <th>Title</th>
-                        <th>Owner</th>
+                        @if(Auth::user()->role != 'author')
+                            <th>Owner</th>
+                        @endif
+                        <td>
+                            Post Count
+                        </td>
                         <th>Control</th>
                         <th>Created At</th>
                     </tr>
@@ -30,8 +35,13 @@
                                 <br>
                                 <span class="badge bg-info">{{ $category->slug }}</span>
                             </td>
+                            @if(Auth::user()->role != 'author')
+                                <td>
+                                    {{ $category->user->name ?? 'Unknown' }}
+                                </td>
+                            @endif
                             <td>
-                                {{ \App\Models\User::find($category->user_id)->name }}
+                                {{ $category->posts()->count() }}
                             </td>
                             <td>
                                 @can('update',$category)

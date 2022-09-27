@@ -34,6 +34,16 @@
                     @enderror
                 </div>
                 <div class="mb-3">
+                    <label for="photos">Post Photo</label>
+                    <input type="file" id="photos" class="form-control @error('photos') is-invalid @enderror @error('photos.*') is-invalid @enderror" value="{{ old('photos') }}" name="photos[]" multiple>
+                    @error('photos.*')
+                        <small class="invalid-feedback fw-bold">{{ $message }}</small>
+                    @enderror
+                    @error('photos')
+                        <small class="invalid-feedback fw-bold">{{ $message }}</small>
+                    @enderror
+                </div>
+                <div class="mb-3">
                     <label for="description">Description</label>
                     <textarea type="text" rows="10" id="description" class="form-control @error('description') is-invalid @enderror" name="description">{{ old('description') }}</textarea>
                     @error('description')

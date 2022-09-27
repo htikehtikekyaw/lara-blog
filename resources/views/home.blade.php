@@ -8,7 +8,7 @@
     </nav>
     <div class="card">
         <div class="card-body">
-            San Kyi Tar Par
+            {{ Auth::user()->isAuthor() ? 'yes' : 'no' }}
         </div>
     </div>
 @endsection

@@ -6,8 +6,13 @@ use Illuminate\Database\Seeder;
 use App\Models\Category;
 use App\Models\User;
 use App\Models\Post;
+use App\Models\Nation;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Database\Seeders\UserSeeder;
+use Database\Seeders\CategorySeeder;
+use Database\Seeders\PostSeeder;
+use Illuminate\Support\Facades\Storage;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,27 +23,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\User::factory(10)->create();
-        \App\Models\User::factory()->create([
-            'name'=> 'Htike Htike Kyaw',
-            'email'=> 'htikekyaw2018@gmail.com',
-            'password'=> Hash::make('password'),
-
+        $this->call([
+            NationSeeder::class,
+            UserSeeder::class,
+            CategorySeeder::class,
+            PostSeeder::class,
         ]);
+
+        // $photos = Storage::allFiles('public');
+        // array_shift($photos);
+        // Storage::delete($photos);
+
+        // echo "storage clean";
         
-
-
-        $categories = ['It News','Food & Drink','Travel','Artist'];
-
-        foreach($categories as $c){
-            Category::factory()->create([
-                'title' => $c,
-                'slug' => Str::slug($c),
-                'user_id' => User::inRandomOrder()->first()->id
-            ]);
-        }
-
-        Post::factory(250)->create();
         
     }
 }
