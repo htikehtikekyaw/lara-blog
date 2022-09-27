@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\Paginator;
@@ -43,5 +44,7 @@ class AppServiceProvider extends ServiceProvider
         Blade::if('notAuthor',function(){
             return Auth::user()->role != 'author';
         });
+
+        Schema::defaultStringLength(191);
     }
 }

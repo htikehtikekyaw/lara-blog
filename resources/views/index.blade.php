@@ -3,7 +3,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-12 col-lg-8">
-                <h1 class="text-center">Blog Posts</h1>
+                <h1 class="text-center">Blog by Htike Htike Kyaw</h1>
                 <div class="my-2">
                     <form action="{{ route('page.index') }}" method="get">
                         <div class="input-group">
